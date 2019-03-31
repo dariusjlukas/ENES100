@@ -8,5 +8,8 @@
     "start": "electron ."
   },
   "author": "Darius Lukas",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^4.1.3"
+  }
 }
