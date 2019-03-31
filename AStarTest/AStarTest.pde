@@ -61,7 +61,7 @@ void draw() {
 }
 
 void mousePressed(){
- occupancy[int((mouseX - cWidth/2)/cWidth)][int((mouseY - cHeight/2)/cHeight)] = true; 
+ occupancy[int((mouseX - cWidth/4)/cWidth)][int((mouseY - cHeight/4)/cHeight)] = true; 
 }
 
 ////Custom Functions////
