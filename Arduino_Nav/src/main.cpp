@@ -2,25 +2,29 @@
 #include <Wire.h>
 #include "motor.h"
 #include "motor.cpp"
+#include "laserRange.h"
+#include "laserRange.cpp"
 #include <Servo.h>
 
 int leftMotorSpeedPin = 12;
 int leftMotorDirPin = 11;
 int rightMotorSpeedPin = 10;
 int rightMotorDirPin = 9;
-long distance = 0;
+long distance = -1;
 int sensorServoPos = 0;
 int deltaSensorServoPos = 1;
 unsigned long startMillis = 0;
 int i = 0;
 bool backupFlag = false;
 
-MotorController motors(leftMotorDirPin, leftMotorSpeedPin, rightMotorDirPin, rightMotorSpeedPin);  //Create a motor controller instance
+MotorController motors(leftMotorDirPin, leftMotorSpeedPin, rightMotorDirPin, rightMotorSpeedPin);  //Create a motor controller object
 
 Servo sensorServo;
+LaserRange laserRangefinder(85);  //Create a laser rangefinder object
 
 void setup(){
-  Wire.begin();
+  laserRangefinder.setup();
+  //Wire.begin();
   Serial.begin(9600);
   Serial.println("Starting up...");
   sensorServo.attach(7);
@@ -36,14 +40,16 @@ void loop() {
 
   sweepServo();
 
-  Wire.requestFrom(85, 2);  //Request 8 bytes from address 85 (0x55 in hex)
-  
-  while(Wire.available()) {
-    distance = distance + Wire.read();
-  }
-  Serial.println(distance);
+  distance = laserRangefinder.getRange();
 
+  //Wire.requestFrom(85, 2);  //Request 8 bytes from address 85 (0x55 in hex)
   
+  //while(Wire.available()) {
+  //  distance = distance + Wire.read();
+  //}
+  
+  Serial.println(analogRead(A0));
+
   if(distance > 30 && backupFlag == false){
     motors.move(15);
   }
@@ -81,7 +87,7 @@ void loop() {
     }
   }
 
-  distance = 0; //Reset the distance measurment
+  distance = 0; //reset the distance variable
 }
 
 void sweepServo(){
