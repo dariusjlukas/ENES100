@@ -20,7 +20,7 @@ void setup(){
   robotY = height/2;
   
   //Open serial port
-  String port = Serial.list() [0]; //get the serial port
+  String port = Serial.list() [2]; //get the serial port
   serial = new Serial(this, port, 9600);
 }
 
@@ -56,7 +56,7 @@ void drawRobot(float x, float y, float rWidth, float rHeight, float sM){
 }
 
 void drawObstacle(float rX, float rY, float rW, float rH, int sensorNum, float distance, float sM){
-  if(distance < 50){  //Distances 50 and above should not be drawn because they will be ignored  
+  if(distance < 100){  //Distances 50 and above should not be drawn because they will be ignored  
   rW = rW * sM;
   rH = rH * sM;
   distance = distance * sM;

@@ -1,4 +1,5 @@
-boolean [][] occupancy = new boolean [10][10]; //<>//
+ //<>//
+boolean [][] occupancy = new boolean [10][10];
 int [][] shortestPath = new int [100][2];
 int targetX = 325;
 int targetY = 325;
@@ -9,12 +10,6 @@ float cHeight;
 
 void setup() {
   size(500, 500);
-//  occupancy[1][5] = true;
-//  occupancy[1][6] = true;
-//  occupancy[4][3] = true;
-//  occupancy[4][5] = true;
-//  occupancy[5][5] = true;
-//  occupancy[6][5] = true;
   cWidth = width/occupancy[0].length;
   cHeight = height/occupancy.length;
  
@@ -52,6 +47,7 @@ void draw() {
      break; 
     }
     else{
+      print(shortestPath[i][0] + "   " + shortestPath[i][1] + "  ");
       strokeWeight(5);
       line(shortestPath[i][0] *(cWidth) + cWidth/2, shortestPath[i][1] *(cHeight) + cHeight/2, shortestPath[i+1][0] *(cWidth) + cWidth/2, shortestPath[i+1][1] *(cHeight) + cHeight/2); //<>//
       strokeWeight(1);
@@ -76,8 +72,8 @@ void shortestPath() {  //Calculate the shortest path
 
   currentNode[0] = int((roverX - cWidth/2)/cWidth);  //Set the initial node column
   currentNode[1] = int((roverY - cHeight/2)/cHeight); //Set the initial node row
-  println(currentNode[0]);
-  println(currentNode[1]);
+  //println(currentNode[0]);
+  //println(currentNode[1]);
 
   cameFrom[0] = currentNode[0];  //Set the initial previous node to the current one
   cameFrom[1] = currentNode[1];
@@ -194,9 +190,9 @@ void shortestPath() {  //Calculate the shortest path
       }
     }
 
-    for (int g = 0; g < donePile.length; g++) {  //Print the que for debug
-      println(donePile[g]);
-    }
+    //for (int g = 0; g < donePile.length; g++) {  //Print the que for debug
+    //  println(donePile[g]);
+    //}
     
     //Add currentNode to donePile array, along with the value of cameFrom
     donePile[donePileCount][0] = currentNode[0];
@@ -259,9 +255,9 @@ void reconstructPath(int [][] donePile) {    //Reconstruct the path used to get 
   
   
   //Print the shortest path
-  for(int i = 0; i < shortestPath.length; i++){
-    println(shortestPath[i]);
-  }
+  //for(int i = 0; i < shortestPath.length; i++){
+  //  println(shortestPath[i]);
+  //}
 }
 
 boolean inDonePile(int x, int y, int [][] donePile, int donePileCount){
