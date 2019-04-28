@@ -1,0 +1,11 @@
+Enes100Simulation	KEYWORD1
+TankSimulation	KEYWORD1
+turnOffMotors	KEYWORD2
+setLeftMotorPWM	KEYWORD2
+setRightMotorPWM	KEYWORD2
+updateLocation	KEYWORD2
+retrieveDestination	KEYWORD2
+readDistanceSensor	KEYWORD2
+print	KEYWORD2
+println KEYWORD2
+begin	KEYWORD2
