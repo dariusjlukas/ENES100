@@ -1,7 +1,6 @@
 #include "detectContact.h"
 #include "movement.h"
-//#include "Enes100SimulationLocal.h"
-//#include "TankSimulation.h"
+
 
 #define m_motor_speed 100 //medium motor speed
 float obstacleDistance = 100;
