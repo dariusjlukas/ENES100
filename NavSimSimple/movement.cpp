@@ -1,15 +1,62 @@
 #include <arduino.h>
-#include "Enes100Simulation.h"
-#include "../NavSimSimple/Enes100Simulation.h"
-#include "../NavSimSimple/TankSimulation.h"
+#include "Enes100SimulationLocal.h"
+#include "TankSimulation.h"
 #include "detectContact.h"
+#include "movement.h"
 
-
-constexpr float precision = 0.1;
+float precision = 0.1;
 
 void simulationInit(){
-    
+    TankSimulation.begin();
+
+    while (!Enes100Simulation.begin())
+    {
+        Enes100Simulation.println("Unable to connect to simulation");
+    }
+
+    Enes100Simulation.println("Starting Navigation");
+
+    while (!Enes100Simulation.updateLocation())
+    {
+        Enes100Simulation.println("Unable to update Location");
+    }
 }
+
+void updateLocation(){
+    Enes100Simulation.updateLocation();
+}
+
+float getDestinationY(){
+    Enes100Simulation.updateLocation();
+    return Enes100Simulation.destination.y;
+}
+
+float getDestinationX(){
+    Enes100Simulation.updateLocation();
+    return Enes100Simulation.destination.x;
+}
+
+float getLocationY(){
+    Enes100Simulation.updateLocation();
+    return Enes100Simulation.location.y;
+}
+
+float getLocationX(){
+    Enes100Simulation.updateLocation();
+    return Enes100Simulation.location.x;
+}
+
+void stop(){
+    TankSimulation.turnOffMotors();
+}
+
+// void simPrint(String s){
+//     Enes100Simulation.print(s);
+// }
+
+// void simPrintln(String s){
+//     Enes100Simulation.println(s);
+// }
 
 void rotateTo(float targetTheta, float motorSpeed){
     Enes100Simulation.updateLocation();
@@ -21,6 +68,7 @@ void rotateTo(float targetTheta, float motorSpeed){
         Enes100Simulation.updateLocation();
         TankSimulation.setLeftMotorPWM(delta * motorSpeed);
         TankSimulation.setRightMotorPWM(-delta * motorSpeed);
+        Enes100Simulation.println(Enes100Simulation.location.theta);
     }
     TankSimulation.turnOffMotors();
 }
