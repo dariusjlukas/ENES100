@@ -5,7 +5,7 @@
 
 #define m_motor_speed 100 //medium motor speed
 float obstacleDistance = 100;
-float closeDistance = 0.1;
+float closeDistance = 0.15;
 constexpr float maxX = 3.8;
 constexpr float maxY = 1.85;
 
@@ -19,9 +19,9 @@ void setup()
 void loop()
 {
 
-    //turn such that the rover is lined up with the target
+    //turn such that the rover is lined up with the center of the field
     updateLocation();
-    if (getDestinationY() > getLocationY())
+    if (getLocationY() < 1)
     {
         rotateTo(3.14159 / 2, m_motor_speed); //Turn to face up
     }
@@ -33,8 +33,8 @@ void loop()
     //Update the OSV location
     updateLocation();
 
-    //Move such that the OSV is lined up with the target in the y-direction
-    moveToY(getDestinationY(), closeDistance, m_motor_speed);
+    //Move such that the OSV is lined up with the center of the field
+    moveToY(1, closeDistance, m_motor_speed);
 
     stop();
     Serial.println("Y lined up with target");
@@ -50,13 +50,15 @@ void loop()
         {
             Serial.println("Avoiding obstacle");
             Serial.flush();
-            if(getLocationY() > (maxY/2)){
-                rotateTo((3.14159/2), m_motor_speed);
+            if(getLocationY() > getDestinationY()){
+                rotateTo(-(3.14159/2), m_motor_speed);
+                moveToY((getLocationY() - 0.3), closeDistance - 0.05, m_motor_speed);   //Try to avoid the obstacle
             }
             else{
-                rotateTo(-(3.14159/2), m_motor_speed);
+                rotateTo((3.14159/2), m_motor_speed);
+                moveToY((getLocationY() + 0.3), closeDistance - 0.05, m_motor_speed);   //Try to avoid the obstacle
             }
-            moveToY((getLocationY() + 0.3), closeDistance - 0.05, m_motor_speed);   //Try to avoid the obstacle
+            
             rotateTo(0, m_motor_speed);
         }
         else

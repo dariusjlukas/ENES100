@@ -79,8 +79,8 @@ void rotateTo(float targetTheta, float motorSpeed)
     while (abs(Enes100Simulation.location.theta - targetTheta) > 0.05)
     {
         Enes100Simulation.updateLocation();
-        TankSimulation.setLeftMotorPWM(-delta * motorSpeed);
-        TankSimulation.setRightMotorPWM(delta * motorSpeed);
+        TankSimulation.setLeftMotorPWM(delta * motorSpeed);
+        TankSimulation.setRightMotorPWM(-delta * motorSpeed);
         Enes100Simulation.println(Enes100Simulation.location.theta);
     }
     TankSimulation.turnOffMotors();
