@@ -3,5 +3,5 @@
     "board": "arduino:avr:mega",
     "configuration": "cpu=atmega2560",
     "port": "COM6",
-    "sketch": "NavSimSimple\\NavSimSimpleCode.ino"
+    "sketch": "NavSimSimple/NavSimSimpleCode.ino"
 }
