@@ -1,4 +1,4 @@
-#include <arduino.h>
+#include <Arduino.h>
 #include "detectContact.h"
 
 constexpr auto detectDistance = 1.0;

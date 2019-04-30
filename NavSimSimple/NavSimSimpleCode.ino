@@ -3,6 +3,7 @@
 
 
 #define m_motor_speed 100 //medium motor speed
+
 float obstacleDistance = 100;
 float closeDistance = 0.15;
 constexpr float maxX = 3.8;
