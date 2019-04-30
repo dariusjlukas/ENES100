@@ -7,7 +7,9 @@ void moveToY(float targetY, float closeDistance, float motorSpeed);
 
 void moveToX(float targetY, float closeDistance, float motorSpeed);
 
-void simulationInit();
+void roverInit(int id);
+
+void roverInit(int id, int motorAPWM, int motorBPWM, int motorADir, int motorBDir);
 
 void updateLocation();
 
@@ -27,5 +29,7 @@ float closestObstacle();
 
 //void simPrintln(String s);
 
+#define trigPin 8   //Ultrasonic trigger and echo pins
+#define echoPin 9
 
 #endif

@@ -1,11 +1,10 @@
-#include "detectContactHW.h"
+#include <Arduino.h>
+#include "detectContact.h"
 #include "movementHardware.h"
 
 
-#define trigPin 8   //Ultrasonic trigger and echo pins
-#define echoPin 9
-
 #define m_motor_speed 100 //medium motor speed
+#define ID_NUMBER 6 //Set the ID number of the QR marker
 
 float obstacleDistance = 100;
 float closeDistance = 0.15;
@@ -16,7 +15,10 @@ constexpr float maxY = 1.85;
 
 void setup()
 {
-    simulationInit();
+    Serial.begin(9600);
+    roverInit(ID_NUMBER);   //Check the movementHardware file for the TX and RX pins for the radio
+    pinMode(trigPin, OUTPUT);   //Set up the pins for the ultrasonic rangefinder
+    pinMode(echoPin, INPUT);
 }
 
 void loop()

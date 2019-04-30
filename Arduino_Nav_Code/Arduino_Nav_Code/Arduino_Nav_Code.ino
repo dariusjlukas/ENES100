@@ -14,7 +14,7 @@ void setup() {
 }
 
 void loop() {
-  //Clear the triger pin
+  //Clear the trigger pin
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);     ////!!!Fix this with scheduling!!!///
   digitalWrite(trigPin, HIGH);
