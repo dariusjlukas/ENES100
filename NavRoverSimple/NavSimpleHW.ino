@@ -2,7 +2,6 @@
 #include "detectContact.h"
 #include "movementHardware.h"
 
-
 #define m_motor_speed 100 //medium motor speed
 #define ID_NUMBER 6 //Set the ID number of the QR marker
 
