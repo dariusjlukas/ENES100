@@ -2,6 +2,10 @@
     "programmer": "AVR ISP",
     "board": "arduino:avr:mega",
     "configuration": "cpu=atmega2560",
+<<<<<<< HEAD
     "port": "COM6",
+=======
+    "port": "/dev/ttyACM0",
+>>>>>>> 6efef6f19146d363590bd7e361c34ce06a085e88
     "sketch": "NavSimSimple/NavSimSimpleCode.ino"
 }
