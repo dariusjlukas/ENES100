@@ -1,5 +1,5 @@
-const int trigPin = 9;
-const int echoPin = 10;
+const int trigPin = 8;
+const int echoPin = 9;
 
 long duration;  //Duration and distance values from the ultrasonic sensor
 int distance;
@@ -14,7 +14,7 @@ void setup() {
 }
 
 void loop() {
-  //Clear the trigger pin
+  //Clear the triger pin
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);     ////!!!Fix this with scheduling!!!///
   digitalWrite(trigPin, HIGH);

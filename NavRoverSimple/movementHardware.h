@@ -29,7 +29,10 @@ float closestObstacle();
 
 //void simPrintln(String s);
 
-#define trigPin 8   //Ultrasonic trigger and echo pins
+#define trigPin 8   //Left Ultrasonic trigger and echo pins
 #define echoPin 9
+
+#define trigPin2 3  //Right ultrasonic trigger and echo pins
+#define echoPin2 2
 
 #endif

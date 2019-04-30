@@ -12,9 +12,10 @@ float precision = 0.05;
 
 void roverInit(int id)
 {
-    while (!Enes100.begin("The T ID", DEBRIS, id, 10, 11))
-    {
-    }
+    //while (!Enes100.begin("The T ID", DEBRIS, id, 10, 11))
+    //{
+    //}
+    Enes100.begin("The T ID", DEBRIS, id, 10, 11);
     pinMode(leftMSpeed, OUTPUT); //Set the motor controller pins to output
     pinMode(leftMDir, OUTPUT);
     pinMode(rightMSpeed, OUTPUT);
@@ -79,14 +80,18 @@ void stop()
 
 float closestObstacle()
 {
-    updateLocation();
-    //Read the ultrasonic sensor
+    updateLocation(); 
+    //Read the ultrasonic sensors
     long duration; //Duration and distance values from the ultrasonic sensor
     double distance;
     double distArray[10];
     int distArrayCount = 0;
-    double averageDistance = -1;
+    double averageDistance1 = -1;
+    double averageDistance2 = -1;
     //Clear the trigger pin
+
+    //Read the first ultrasonic sensor
+    while(distArrayCount < 10){
     digitalWrite(trigPin, LOW);
     delayMicroseconds(2); ////!!!Fix this with scheduling!!!///
     digitalWrite(trigPin, HIGH);
@@ -108,20 +113,68 @@ float closestObstacle()
     {
         for (int i = 0; i < 10; i++)
         {
-            averageDistance = averageDistance + distArray[i];
+            averageDistance1 = averageDistance1 + distArray[i];
         }
-        averageDistance = averageDistance / 10;
-        distArrayCount = 0;
+        averageDistance1 = averageDistance1 / 10;
+        distArrayCount++;
     }
     else
     {
         distArrayCount++;
     }
+    }
 
-    return detectContact(averageDistance,
-                         100,
+    distArrayCount = 0;
+    //Read the second ultrasonic sensor
+    while(distArrayCount < 10){
+    digitalWrite(trigPin2, LOW);
+    delayMicroseconds(2); ////!!!Fix this with scheduling!!!///
+    digitalWrite(trigPin2, HIGH);
+    delayMicroseconds(10); ////!!!Fix this with scheduling!!!///
+    digitalWrite(trigPin2, LOW);
+
+    duration = pulseIn(echoPin2, HIGH); //Read the duration of the pulse on the echo pin
+
+    distance = duration * 0.034 / 2;
+
+    if (distance > 50)
+    { //If the distance is greater than 50, cap it to 55
+        distance = 55;
+    }
+
+    distArray[distArrayCount] = distance;
+
+    if (distArrayCount == 9)
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            averageDistance2 = averageDistance2+ distArray[i];
+        }
+        averageDistance2 = averageDistance2 / 10;
+        distArrayCount++;
+    }
+    else
+    {
+        distArrayCount++;
+    }
+    }
+
+    //Convert from distance in cm to distance in field units
+    averageDistance1 = averageDistance1 * 0.01; //The field units are in meters and the ultrasonic sensors work in centimeters
+    averageDistance2 = averageDistance2 * 0.01;
+
+    return detectContact(averageDistance1,
+                         averageDistance2,
                          Enes100.location.x,
                          Enes100.location.y); //This test uses a single ultrasonic sensor, so the other distance is set to a large value
+
+    //Testing setup
+    // return detectContact(
+    //     averageDistance1,
+    //     averageDistance2,
+    //     1,
+    //     1
+    // );
 }
 
 void rotateTo(float targetTheta, float motorSpeed)
