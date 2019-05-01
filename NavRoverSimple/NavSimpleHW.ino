@@ -37,7 +37,6 @@ void loop()
 {
   
   //Serial.println(closestObstacle()); //Print debug values
-
     //turn such that the rover is lined up with the center of the field
     updateLocation();
     if (getLocationY() < 1)
