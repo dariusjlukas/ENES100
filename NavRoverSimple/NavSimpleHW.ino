@@ -37,22 +37,19 @@ void loop()
 {
   
   //Serial.println(closestObstacle()); //Print debug values
-    Serial.print(getDestinationX());
-    Serial.print("  ");
-    Serial.println(getDestinationY());
-    // //turn such that the rover is lined up with the center of the field
-    // updateLocation();
-    // if (getLocationY() < 1)
-    // {
-    //     rotateTo(3.14159 / 2, m_motor_speed); //Turn to face up
-    // }
-    // else
-    // {                                          //Turn to face down
-    //     rotateTo(-3.14159 / 2, m_motor_speed); //Turn to face down
-    // }
+    //turn such that the rover is lined up with the center of the field
+    updateLocation();
+    if (getLocationY() < 1)
+    {
+        rotateTo(3.14159 / 2, m_motor_speed); //Turn to face up
+    }
+    else
+    {                                          //Turn to face down
+        rotateTo(-3.14159 / 2, m_motor_speed); //Turn to face down
+    }
 
-    // //Update the OSV location
-    // updateLocation();
+    //Update the OSV location
+    updateLocation();
 
     // //Move such that the OSV is lined up with the center of the field
     // moveToY(1, closeDistance, m_motor_speed);
