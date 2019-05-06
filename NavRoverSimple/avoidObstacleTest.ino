@@ -3,7 +3,7 @@
 #include "movementHardware.h"
 
 #define m_motor_speed 100 //medium motor speed
-#define ID_NUMBER 6 //Set the ID number of the QR marker
+#define ID_NUMBER 11 //Set the ID number of the QR marker
 
 float obstacleDistance = 100;
 float closeDistance = .15; //Distance where the OSV reacts, in meters
@@ -37,6 +37,6 @@ void loop()
 {
   updateLocation();
   rotateTo(0, m_motor_speed);
-  moveToX();
+  moveToX(2, .5, m_motor_speed);
   
 }

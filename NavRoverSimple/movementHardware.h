@@ -25,6 +25,13 @@ void stop();
 
 float closestObstacle();
 
+void setX(float x);
+
+void setY(float y);
+
+void move(float closeDistance, float motorSpeed);
+
+
 //void simPrint(String s);
 
 //void simPrintln(String s);

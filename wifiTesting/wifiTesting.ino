@@ -1,7 +1,7 @@
 #include <Enes100.h>
 
 #define m_motor_speed 100 //medium motor speed
-#define ID_NUMBER 6 //Set the ID number of the QR marker
+#define ID_NUMBER 11 //Set the ID number of the QR marker
 #define trigPin 8   //Left Ultrasonic trigger and echo pins
 #define echoPin 9
 

@@ -8,7 +8,7 @@ int leftMDir = 4;
 int rightMSpeed = 7;
 int rightMDir = 6;
 
-float LMotorSpeedOffset = 1.0;
+float LMotorSpeedOffset = 1.5; //Speed offsets (trim) Bigger numbers are sower
 float RMotorSpeedOffset = 1.0;
 
 float precision = 0.05;
@@ -54,6 +54,14 @@ float getLocationY()
 float getLocationX()
 {
     return Enes100.location.x;
+}
+
+void setX(float x){ //For testing only, manually set the x-coordinate of the rover
+    Enes100.location.x = x;
+}
+
+void setY(float y){ //For testing only, manually set the y-coordinate of the rover
+    Enes100.location.y = y;
 }
 
 void stop()
@@ -230,9 +238,12 @@ void moveToX(float targetX, float closeDistance, float motorSpeed)
         if (obstacleDistance < closeDistance)
         {
             stop(); //If there is an obstacle too close, stop ///Update this behavior///
+            digitalWrite(22, HIGH);
+            Serial.println("Obstacle detected");
         }
         else
         {
+            digitalWrite(22, LOW);
             digitalWrite(leftMDir, HIGH);
             digitalWrite(rightMDir, HIGH);
             analogWrite(leftMSpeed, motorSpeed * LMotorSpeedOffset);
@@ -243,4 +254,11 @@ void moveToX(float targetX, float closeDistance, float motorSpeed)
         Serial.print("   ");
         Serial.println(obstacleDistance);
     }
+}
+
+void move(float closeDistance, float motorSpeed){
+    digitalWrite(leftMDir, HIGH);
+    digitalWrite(rightMDir, LOW);
+    analogWrite(leftMSpeed, (float)motorSpeed * LMotorSpeedOffset);
+    analogWrite(rightMSpeed, (float)motorSpeed * RMotorSpeedOffset);
 }
