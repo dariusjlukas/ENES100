@@ -1,9 +1,8 @@
-#include <Wire.h>
+#include <Wire.h>//Request 8 bytes from address 85 (0x55 in hex)
 class LaserRange{
-    public:
-    int address;
-    long distance = 0;
 
+public:
+    int address = 0;
     LaserRange(int a){
         address = a;
     }
@@ -13,13 +12,12 @@ class LaserRange{
     }
 
     long getRange(){
-        Wire.requestFrom(address, 2);  //Request 8 bytes from address 85 (0x55 in hex)
+        long distance = 0;
+        Wire.requestFrom(85, 2);  //Request 8 bytes from address 85 (0x55 in hex)
   
         while(Wire.available()) {
-        distance = distance + Wire.read();
+            distance = distance + Wire.read();
         }
-        
-        return(distance);
-        distance = 0; //Reset the distance measurment
+        return distance;
     }
 };
