@@ -42,13 +42,8 @@ void loop() {
 
   distance = laserRangefinder.getRange();
 
-  //Wire.requestFrom(85, 2);  //Request 8 bytes from address 85 (0x55 in hex)
   
-  //while(Wire.available()) {
-  //  distance = distance + Wire.read();
-  //}
-  
-  Serial.println(analogRead(A0));
+  Serial.println(distance);
 
   if(distance > 30 && backupFlag == false){
     motors.move(15);
