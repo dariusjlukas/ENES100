@@ -1,33 +1,55 @@
 #include <Arduino.h>
 #include "detectContact.h"
 #include "movementHardware.h"
-#include "Enes100Local.h"
+#include <Enes100.h>
 
 int leftMSpeed = 5;
 int leftMDir = 4;
 int rightMSpeed = 7;
 int rightMDir = 6;
 
-float LMotorSpeedOffset = 1.5; //Speed offsets (trim) Bigger numbers are sower
+float LMotorSpeedOffset = 1.0; //Speed offsets (trim) Bigger numbers are sower
 float RMotorSpeedOffset = 1.0;
 
-float precision = 0.05;
+float precision = 0.2;
 
 void roverInit(int id)
 {
-    //while (!Enes100.begin("The T ID", DEBRIS, id, 10, 11))
-    //{
-    //}
-    Enes100.begin("The T ID", DEBRIS, id, 10, 11);
-    Serial.println("Set up complete");
+    while (!Enes100.begin("The T ID", DEBRIS, id, 10, 11))
+    {
+    }
+    //Enes100.begin("The T ID", DEBRIS, id, 10, 11);
+    //Serial.println("Set up complete");
     pinMode(leftMSpeed, OUTPUT); //Set the motor controller pins to output
     pinMode(leftMDir, OUTPUT);
     pinMode(rightMSpeed, OUTPUT);
     pinMode(rightMDir, OUTPUT);
     pinMode(12, INPUT);
-    while(digitalRead(12) == LOW){  //Wait for the jumper on pin 12 to go high
-        Enes100.println("Waiting for jumper connection");
-    }
+    //while(digitalRead(12) == LOW){  //Wait for the jumper on pin 12 to go high
+    //    Enes100.println("Waiting for jumper connection");
+    //}
+}
+
+void printDestination()
+{
+    Enes100.updateLocation();
+    Enes100.print(Enes100.destination.x);
+    Enes100.print("     ");
+    Enes100.println(Enes100.destination.y);
+}
+
+void printLocation()
+{
+    Enes100.updateLocation();
+    Enes100.print(Enes100.location.x);
+    Enes100.print("     ");
+    Enes100.println(Enes100.location.y);
+}
+
+void printLocationTheta()
+{
+    Enes100.updateLocation();
+    Enes100.println(Enes100.location.theta);
 }
 
 void updateLocation()
@@ -66,10 +88,10 @@ void setY(float y){ //For testing only, manually set the y-coordinate of the rov
 
 void stop()
 {
-    digitalWrite(leftMDir, HIGH);   //Default the direction pins to high
-    digitalWrite(rightMDir, HIGH);
-    analogWrite(leftMSpeed, 0); //Stop the motors
-    analogWrite(rightMSpeed, 0);
+    digitalWrite(leftMDir, LOW);   //Default the direction pins to high
+    digitalWrite(rightMDir, LOW);
+    digitalWrite(leftMSpeed, LOW); //Stop the motors
+    digitalWrite(rightMSpeed, LOW);
 }
 
 float closestObstacle()
@@ -171,39 +193,53 @@ float closestObstacle()
     // );
 }
 
+float hABS(float input){
+    if(input >=0){
+        return input;
+    }
+    else{
+        return -1.0 * input;
+    }
+}
+
 void rotateTo(float targetTheta, float motorSpeed)
 {
     Enes100.updateLocation();
-    float delta = 1;
-    if (abs(Enes100.location.theta - targetTheta) >= 3.1415926)
+    float delta = 1.0;
+    if (Enes100.location.theta - targetTheta >= 3.1415926)
     {
-        delta = -delta;
+        delta = -1.0;
     }
-    while (abs(Enes100.location.theta - targetTheta) > 0.05)
+    while (hABS((float)Enes100.location.theta - (float)targetTheta) > 0.10)
     {
         Enes100.updateLocation();
+        Enes100.print("theta:  ");
+        Enes100.println(Enes100.location.theta);
         if(delta >= 0){
-            digitalWrite(leftMDir, HIGH);
+            analogWrite(leftMDir, motorSpeed * LMotorSpeedOffset);
             digitalWrite(rightMDir, LOW);
-            analogWrite(leftMSpeed, motorSpeed * LMotorSpeedOffset);
+            digitalWrite(leftMSpeed, LOW);
             analogWrite(rightMSpeed, motorSpeed * RMotorSpeedOffset);
+            Enes100.println(hABS((float)Enes100.location.theta - (float)targetTheta));
         }
-        else{
-            digitalWrite(leftMDir, LOW);
-            digitalWrite(rightMDir, HIGH);
-            analogWrite(leftMSpeed, motorSpeed * LMotorSpeedOffset);
-            analogWrite(rightMSpeed, motorSpeed * RMotorSpeedOffset);
+         else{
+             digitalWrite(leftMDir, LOW);
+             analogWrite(rightMDir, motorSpeed * RMotorSpeedOffset);
+             analogWrite(leftMSpeed, motorSpeed * LMotorSpeedOffset);
+             digitalWrite(rightMSpeed, LOW);
+             Enes100.println(hABS((float)Enes100.location.theta - (float)targetTheta));
         }
-        Serial.println(Enes100.location.theta);
     }
     stop();
+    Enes100.println("Rotation Complete");
+
 }
 
 void moveToY(float targetY, float closeDistance, float motorSpeed)
 {
     Enes100.updateLocation();
     float obstacleDistance = 100;
-    while (abs(Enes100.location.y - targetY) > precision) //Move until the OSV is lined up with the target
+    while (hABS(Enes100.location.y - targetY) > precision) //Move until the OSV is lined up with the target
     {
         //Update the distance to the closest obstacle (including the wall)
         Enes100.updateLocation();
@@ -214,10 +250,10 @@ void moveToY(float targetY, float closeDistance, float motorSpeed)
         }
         else
         {
-            digitalWrite(leftMDir, HIGH);
-            digitalWrite(rightMDir, HIGH);
-            analogWrite(leftMSpeed, motorSpeed * LMotorSpeedOffset);
-            analogWrite(rightMSpeed, motorSpeed * RMotorSpeedOffset);
+            analogWrite(leftMDir, motorSpeed * LMotorSpeedOffset);
+            analogWrite(rightMDir, motorSpeed * RMotorSpeedOffset);
+            digitalWrite(leftMSpeed, LOW);
+            digitalWrite(rightMSpeed, LOW);
         }
 
         Serial.print(abs(Enes100.location.y - targetY));
@@ -230,7 +266,7 @@ void moveToX(float targetX, float closeDistance, float motorSpeed)
 {
     Enes100.updateLocation();
     float obstacleDistance = 100;
-    while (abs(Enes100.location.x - targetX) > precision) //Move until the OSV is lined up with the target
+    while (targetX > Enes100.location.x) //Move until the OSV is lined up with the target (ONLY GOES RIGHT)
     {
         //Update the distance to the closest obstacle (including the wall)
         Enes100.updateLocation();
@@ -239,26 +275,28 @@ void moveToX(float targetX, float closeDistance, float motorSpeed)
         {
             stop(); //If there is an obstacle too close, stop ///Update this behavior///
             digitalWrite(22, HIGH);
-            Serial.println("Obstacle detected");
+            Enes100.println("Obstacle detected");
         }
         else
         {
             digitalWrite(22, LOW);
-            digitalWrite(leftMDir, HIGH);
-            digitalWrite(rightMDir, HIGH);
-            analogWrite(leftMSpeed, motorSpeed * LMotorSpeedOffset);
-            analogWrite(rightMSpeed, motorSpeed * RMotorSpeedOffset);
+            analogWrite(leftMDir, motorSpeed * LMotorSpeedOffset);
+            analogWrite(rightMDir, motorSpeed * RMotorSpeedOffset);
+            digitalWrite(leftMSpeed, LOW);
+            digitalWrite(rightMSpeed, LOW);
         }
 
-        Serial.print(abs(Enes100.location.x - targetX));
-        Serial.print("   ");
-        Serial.println(obstacleDistance);
+        Enes100.print(hABS(Enes100.location.x - targetX));
+        Enes100.print("   ");
+        Enes100.println(obstacleDistance);
     }
 }
 
 void move(float closeDistance, float motorSpeed){
-    digitalWrite(leftMDir, HIGH);
-    digitalWrite(rightMDir, LOW);
-    analogWrite(leftMSpeed, (float)motorSpeed * LMotorSpeedOffset);
-    analogWrite(rightMSpeed, (float)motorSpeed * RMotorSpeedOffset);
+    //digitalWrite(leftMDir, LOW);
+    //digitalWrite(rightMDir, LOW);
+    digitalWrite(leftMDir, LOW);
+            analogWrite(rightMDir, motorSpeed * RMotorSpeedOffset);
+            analogWrite(leftMSpeed, motorSpeed * LMotorSpeedOffset);
+            digitalWrite(rightMSpeed, LOW);
 }

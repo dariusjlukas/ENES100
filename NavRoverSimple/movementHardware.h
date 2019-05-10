@@ -31,6 +31,13 @@ void setY(float y);
 
 void move(float closeDistance, float motorSpeed);
 
+void printDestination();
+
+void printLocation();
+
+void printLocationTheta();
+
+float hABS(float input);
 
 //void simPrint(String s);
 

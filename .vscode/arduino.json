@@ -3,5 +3,5 @@
     "board": "arduino:avr:mega",
     "configuration": "cpu=atmega2560",
     "port": "/dev/ttyACM0",
-    "sketch": "NavRoverSimple/motorTesting.ino"
+    "sketch": "NavRoverSimple/avoidObstacleTest.ino"
 }
