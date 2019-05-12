@@ -37,6 +37,8 @@ void printLocation();
 
 void printLocationTheta();
 
+void printAvoid();
+
 float hABS(float input);
 
 //void simPrint(String s);

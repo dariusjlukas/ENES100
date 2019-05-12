@@ -32,7 +32,8 @@ void roverInit(int id)
 
 void printDestination()
 {
-    Enes100.updateLocation();
+    //Enes100.updateLocation();
+    updateLocation();
     Enes100.print(Enes100.destination.x);
     Enes100.print("     ");
     Enes100.println(Enes100.destination.y);
@@ -40,7 +41,8 @@ void printDestination()
 
 void printLocation()
 {
-    Enes100.updateLocation();
+    //Enes100.updateLocation();
+    updateLocation();
     Enes100.print(Enes100.location.x);
     Enes100.print("     ");
     Enes100.println(Enes100.location.y);
@@ -48,13 +50,22 @@ void printLocation()
 
 void printLocationTheta()
 {
-    Enes100.updateLocation();
+    //Enes100.updateLocation();
+    updateLocation();
     Enes100.println(Enes100.location.theta);
 }
 
 void updateLocation()
 {
-    Enes100.updateLocation();
+    while(!Enes100.updateLocation()){
+        stop();
+        Enes100.println("Waiting for location update");
+    }
+}
+
+void printAvoid()
+{
+    Enes100.println("Avoiding obstacle");
 }
 
 float getDestinationY()
@@ -204,30 +215,32 @@ float hABS(float input){
 
 void rotateTo(float targetTheta, float motorSpeed)
 {
-    Enes100.updateLocation();
+    //Enes100.updateLocation();
+    updateLocation();
     float delta = 1.0;
     if (Enes100.location.theta - targetTheta >= 3.1415926)
     {
         delta = -1.0;
     }
-    while (hABS((float)Enes100.location.theta - (float)targetTheta) > 0.10)
+    while (hABS((float)Enes100.location.theta - (float)targetTheta) > 0.12)
     {
-        Enes100.updateLocation();
-        Enes100.print("theta:  ");
-        Enes100.println(Enes100.location.theta);
+        //Enes100.updateLocation();
+        updateLocation();
+        //Enes100.print("theta:  ");
+        //Enes100.println(Enes100.location.theta);
         if(delta >= 0){
             analogWrite(leftMDir, motorSpeed * LMotorSpeedOffset);
             digitalWrite(rightMDir, LOW);
             digitalWrite(leftMSpeed, LOW);
             analogWrite(rightMSpeed, motorSpeed * RMotorSpeedOffset);
-            Enes100.println(hABS((float)Enes100.location.theta - (float)targetTheta));
+            //Enes100.println(hABS((float)Enes100.location.theta - (float)targetTheta));
         }
          else{
              digitalWrite(leftMDir, LOW);
              analogWrite(rightMDir, motorSpeed * RMotorSpeedOffset);
              analogWrite(leftMSpeed, motorSpeed * LMotorSpeedOffset);
              digitalWrite(rightMSpeed, LOW);
-             Enes100.println(hABS((float)Enes100.location.theta - (float)targetTheta));
+             //Enes100.println(hABS((float)Enes100.location.theta - (float)targetTheta));
         }
     }
     stop();
@@ -237,16 +250,19 @@ void rotateTo(float targetTheta, float motorSpeed)
 
 void moveToY(float targetY, float closeDistance, float motorSpeed)
 {
-    Enes100.updateLocation();
+    //Enes100.updateLocation();
+    updateLocation();
     float obstacleDistance = 100;
     while (hABS(Enes100.location.y - targetY) > precision) //Move until the OSV is lined up with the target
     {
         //Update the distance to the closest obstacle (including the wall)
-        Enes100.updateLocation();
+        //Enes100.updateLocation();
+        updateLocation();
         obstacleDistance = closestObstacle();
         if (obstacleDistance < closeDistance)
         {
             stop(); //If there is an obstacle too close, stop ///Update this behavior///
+            Enes100.println("Obstacle detected");
         }
         else
         {
@@ -264,17 +280,19 @@ void moveToY(float targetY, float closeDistance, float motorSpeed)
 
 void moveToX(float targetX, float closeDistance, float motorSpeed)
 {
-    Enes100.updateLocation();
+    //Enes100.updateLocation();
+    updateLocation();
     float obstacleDistance = 100;
     while (targetX > Enes100.location.x) //Move until the OSV is lined up with the target (ONLY GOES RIGHT)
     {
         //Update the distance to the closest obstacle (including the wall)
-        Enes100.updateLocation();
+        //Enes100.updateLocation();
+        updateLocation();
         obstacleDistance = closestObstacle();
         if (obstacleDistance < closeDistance)
         {
             stop(); //If there is an obstacle too close, stop ///Update this behavior///
-            digitalWrite(22, HIGH);
+            //digitalWrite(22, HIGH);
             Enes100.println("Obstacle detected");
         }
         else

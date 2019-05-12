@@ -3,7 +3,7 @@
 #include "movementHardware.h"
 
 #define m_motor_speed 100 //medium motor speed
-#define ID_NUMBER 6 //Set the ID number of the QR marker
+#define ID_NUMBER 11 //Set the ID number of the QR marker
 
 float obstacleDistance = 100;
 float closeDistance = .15; //Distance where the OSV reacts, in meters
@@ -39,12 +39,20 @@ void loop()
   //Serial.println(closestObstacle()); //Print debug values
     //turn such that the rover is lined up with the center of the field
     updateLocation();
-    if (getLocationY() < 1)
+    //delay(1000);
+    updateLocation();
+    updateLocation();
+    printLocation();
+    if (getLocationY() < (maxY/2))
     {
+        Serial.println("Turning up");
+        Serial.println(getLocationY());
         rotateTo(3.14159 / 2, m_motor_speed); //Turn to face up
     }
     else
-    {                                          
+    {                               
+        Serial.println("Turning down");
+        Serial.println(getLocationY());           
         rotateTo(-3.14159 / 2, m_motor_speed); //Turn to face down
     }
 
@@ -53,20 +61,21 @@ void loop()
     moveToY(1, closeDistance, m_motor_speed);
 
     stop();
-    Serial.println("Y lined up with target");
+    Serial.println("Y lined up with center");
     Serial.flush();
 
     //Turn to the right
     rotateTo(0, m_motor_speed);
 
     //Move until an obstacle is spotted, or until the x-coordinate of the rover and the target line up
-    while (abs(getLocationX() - getDestinationX()) > 0.05)
+    while (abs(getLocationX() - (getDestinationX() - 0.1)) > 0.05)
     {
         if (closestObstacle() < (closeDistance))
         {
             Serial.println("Avoiding obstacle");
+            printAvoid();
             Serial.flush();
-            if(getLocationY() > getDestinationY()){
+            if(getLocationY() > (maxY/2)){
                 rotateTo(-(3.14159/2), m_motor_speed);
                 moveToY((getLocationY() - 0.3), closeDistance - 0.05, m_motor_speed);   //Try to avoid the obstacle
             }
@@ -91,13 +100,16 @@ void loop()
     if (getDestinationY() > getLocationY())
     {
         rotateTo(3.14159 / 2, m_motor_speed); //Turn to face up
+        //Move such that the OSV is lined up with the target in the y-direction
+        moveToY(getDestinationY() - 0.2, closeDistance, m_motor_speed);
     }
     else
-    {                                          //Turn to face down
+    {                                     
         rotateTo(-3.14159 / 2, m_motor_speed); //Turn to face down
+        //Move such that the OSV is lined up with the target in the y-direction
+        moveToY(getDestinationY() + 0.2, closeDistance, m_motor_speed);
     }
-    //Move such that the OSV is lined up with the target in the y-direction
-    moveToY(getDestinationY(), closeDistance, m_motor_speed);
+    
     stop();
     Serial.println("Target Reached");
     Serial.flush();
