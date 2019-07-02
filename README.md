@@ -1,2 +1,3 @@
 # ENES100
-Repo for ENES100 class code
+Repo for my group's ENES100 class code.
+2019
